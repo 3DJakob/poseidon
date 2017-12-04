@@ -12,3 +12,4 @@ int offPin = 6;
 int waterPin = 9;
 int sensePin = A0;
 ```
+The `offPin` and `waterPin` should each be on the oposite side of the 3 position switch.
