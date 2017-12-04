@@ -7,6 +7,7 @@ int sensePin = A0;
 boolean running;
 boolean pour = false; // If it should pour this loop
 boolean fill = false; // If it's running a long fill
+boolean failsafe = false; // If there is a problem with the watering
 unsigned long time = 0;
 
 void setup() {
@@ -20,6 +21,7 @@ void setup() {
 }
 
 void loop() {
+  // Serial.println(analogRead(sensePin));
   pour = false;
   running = true;
   if (!digitalRead(offPin)) {
@@ -29,6 +31,7 @@ void loop() {
     // Off
     digitalWrite(greenPin, LOW);
     running = false;
+    failsafe = false;
   }
   if (digitalRead(waterPin)) {
     pour = true;
@@ -36,15 +39,31 @@ void loop() {
   if (900 > analogRead(sensePin) && analogRead(sensePin) > 700) {
     fill = true;
   }
-  if (fill) {
+  if (fill && !failsafe) {
     int elapsed = millis() - time;
     if (time == 0) {
       time = millis();
-    } else if (elapsed <= 2000) {
+    } else if (elapsed <= 3000) {
       pour = true;
-    } else if (elapsed >= 2000) {
+    } else if (elapsed >= 3000) {
+      if (900 > analogRead(sensePin) && analogRead(sensePin) > 700) {
+        // Enter failsafe!
+        failsafe = true;
+      }
       time = 0;
       fill = false;
+    }
+  }
+  if (failsafe) {
+    int elapsed = millis() - time;
+    if (time == 0) {
+      time = millis();
+    } else if (elapsed <= 1000) {
+      digitalWrite(bluePin, HIGH);
+    } else if (1000 <= elapsed && elapsed <= 2000) {
+      digitalWrite(bluePin, LOW);
+    } else {
+      time = millis();
     }
   }
   water(pour);
