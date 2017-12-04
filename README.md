@@ -32,3 +32,13 @@ int waterPin = 9;
 int sensePin = A0;
 ```
 The `offPin` and `waterPin` should each be on the oposite side of the 3 position switch.
+
+# images
+
+![Poseidon](images/1.JPG)
+![Front](images/2.JPG)
+![Side](images/3.JPG)
+![Soil](images/4.JPG)
+![Back](images/5.JPG)
+![Pump](images/6.JPG)
+![Inside](images/7.JPG)
